@@ -11,6 +11,9 @@ from keras.optimizers import RMSprop
 from keras.preprocessing.sequence import pad_sequences
 
 import preprocess
+import sys
+sys.path.insert(0, 'retrofitting')
+import retrofit
 
 y_map = {"PADDING": 0, "A0": 1, "A1": 2, "A2": 3, "A3": 4, "NONE": 5}
 
@@ -123,17 +126,25 @@ def main():
         embedding_matrix = np.zeros((VOCABULARY_SIZE + 1, EMBEDDING_DIM))
        
         #CSE 537 Project Code
-        outfile = open("output.txt", "w")
+        wordVec = open("wordVec.txt", "w")
         for (word_id, (word, embedding_vector)) in s_embedings.items():
             if embedding_vector is not None:
                 # words not found in embedding index will be all-zeros.
                 embedding_matrix[word_id] = embedding_vector
                 # embedding_map[id_to_word[word_id]] = embedding_vector
-                embed_str = ""
-                for embed in embedding_vector:
-                    embed_str = embed_str + " " + str(embed)
-                outfile.write(word + " " + embed_str + "\n")
-        outfile.close()
+                #Do not retrofit comma
+                if "," not in word:
+                    embed_str = ""
+                    for embed in embedding_vector:
+                        embed_str = embed_str + "," + str(embed)
+                    wordVec.write(word + embed_str + "\n")
+        wordVec.close()
+
+        #Retrofit embeddings
+        wordVecs = retrofit.read_word_vecs("wordVec.txt")
+        lexicon = retrofit.read_lexicon("retrofitting/lexicons/ppdb-xl.txt", wordVecs)
+        numIter = int(10)
+        retrofit.print_word_vecs(retrofit.retrofit(wordVecs, lexicon, numIter), "outFile.txt") 
 
         # pickle.dump(embedding_map, open("utils/embedding_map", "wb"))
 
