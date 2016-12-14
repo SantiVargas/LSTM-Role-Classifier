@@ -94,7 +94,8 @@ def main():
                     else:
                         test_map_data.append([sentence.sentence_id, token.get_token(), token.get_label()])
                     if token.get_token_id() not in s_embedings:
-                        s_embedings[token.get_token_id()] = token.get_embedding()
+                        #Project Code
+			s_embedings[token.get_token_id()] = (token.get_token(), token.get_embedding())
                 if process.name in train_processes:
                     X_train_raw.append(sent_X)
                     Y_train_raw.append(sent_Y)
@@ -120,11 +121,19 @@ def main():
         # pre-trained embeddings
         # embedding_map = {}
         embedding_matrix = np.zeros((VOCABULARY_SIZE + 1, EMBEDDING_DIM))
-        for word_id, embedding_vector in s_embedings.items():
-            if embedding_vector is not None:
+       
+	#CSE 537 Project Code
+	outfile = open("output.txt", "w")
+	for (word_id, (word, embedding_vector)) in s_embedings.items():
+	    if embedding_vector is not None:
                 # words not found in embedding index will be all-zeros.
                 embedding_matrix[word_id] = embedding_vector
                 # embedding_map[id_to_word[word_id]] = embedding_vector
+		embed_str = ""
+		for embed in embedding_vector:
+		    embed_str = embed_str + " " + str(embed)
+		outfile.write(word + " " + embed_str + "\n")
+	outfile.close()
 
         # pickle.dump(embedding_map, open("utils/embedding_map", "wb"))
 
