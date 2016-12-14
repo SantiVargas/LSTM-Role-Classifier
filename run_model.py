@@ -95,7 +95,7 @@ def main():
                         test_map_data.append([sentence.sentence_id, token.get_token(), token.get_label()])
                     if token.get_token_id() not in s_embedings:
                         #Project Code
-			s_embedings[token.get_token_id()] = (token.get_token(), token.get_embedding())
+                        s_embedings[token.get_token_id()] = (token.get_token(), token.get_embedding())
                 if process.name in train_processes:
                     X_train_raw.append(sent_X)
                     Y_train_raw.append(sent_Y)
@@ -122,18 +122,18 @@ def main():
         # embedding_map = {}
         embedding_matrix = np.zeros((VOCABULARY_SIZE + 1, EMBEDDING_DIM))
        
-	#CSE 537 Project Code
-	outfile = open("output.txt", "w")
-	for (word_id, (word, embedding_vector)) in s_embedings.items():
-	    if embedding_vector is not None:
+        #CSE 537 Project Code
+        outfile = open("output.txt", "w")
+        for (word_id, (word, embedding_vector)) in s_embedings.items():
+            if embedding_vector is not None:
                 # words not found in embedding index will be all-zeros.
                 embedding_matrix[word_id] = embedding_vector
                 # embedding_map[id_to_word[word_id]] = embedding_vector
-		embed_str = ""
-		for embed in embedding_vector:
-		    embed_str = embed_str + " " + str(embed)
-		outfile.write(word + " " + embed_str + "\n")
-	outfile.close()
+                embed_str = ""
+                for embed in embedding_vector:
+                    embed_str = embed_str + " " + str(embed)
+                outfile.write(word + " " + embed_str + "\n")
+        outfile.close()
 
         # pickle.dump(embedding_map, open("utils/embedding_map", "wb"))
 
@@ -365,9 +365,9 @@ def main():
 
         out_name = 'out_data/fold-' + str(f_num+1) + '/test/'
         with open(out_name + 'test.srlpredict.json', 'w') as fp:
-            json.dump(j_dump_data, fp, indent=4)
+            json.dump(dict(j_dump_data), fp, indent=4)
         with open(out_name + 'test.srlout.json', 'w') as fp:
-            json.dump(j_dump_data, fp, indent=4)
+            json.dump(dict(j_dump_data), fp, indent=4)
 
     print "\n\nDone!"
 
