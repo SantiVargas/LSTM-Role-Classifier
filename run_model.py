@@ -126,7 +126,7 @@ def main():
         embedding_matrix = np.zeros((VOCABULARY_SIZE + 1, EMBEDDING_DIM))
        
         #CSE 537 Project Code
-        wordVec = open("wordVec.txt", "w")
+        wordVec = dict()
         for (word_id, (word, embedding_vector)) in s_embedings.items():
             if embedding_vector is not None:
                 # words not found in embedding index will be all-zeros.
@@ -137,14 +137,12 @@ def main():
                     embed_str = ""
                     for embed in embedding_vector:
                         embed_str = embed_str + "," + str(embed)
-                    wordVec.write(word + embed_str + "\n")
-        wordVec.close()
+                    wordVec[word] = retrofit.normalize_weight_vector(embedding_vector)
 
         #Retrofit embeddings
-        wordVecs = retrofit.read_word_vecs("wordVec.txt")
-        lexicon = retrofit.read_lexicon("retrofitting/lexicons/ppdb-xl.txt", wordVecs)
+        lexicon = retrofit.read_lexicon("retrofitting/lexicons/ppdb-xl.txt", wordVec)
         numIter = int(10)
-        new_embeddings = retrofit.retrofit(wordVecs, lexicon, numIter)
+        new_embeddings = retrofit.retrofit(wordVec, lexicon, numIter)
 
         vocab = d.get_vocabulary()
         for word in new_embeddings:
