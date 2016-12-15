@@ -97,7 +97,7 @@ def main():
                     else:
                         test_map_data.append([sentence.sentence_id, token.get_token(), token.get_label()])
                     if token.get_token_id() not in s_embedings:
-                        #Project Code
+                        #CSE 537 Project Code
                         s_embedings[token.get_token_id()] = (token.get_token(), token.get_embedding())
                 if process.name in train_processes:
                     X_train_raw.append(sent_X)
@@ -144,7 +144,12 @@ def main():
         wordVecs = retrofit.read_word_vecs("wordVec.txt")
         lexicon = retrofit.read_lexicon("retrofitting/lexicons/ppdb-xl.txt", wordVecs)
         numIter = int(10)
-        retrofit.print_word_vecs(retrofit.retrofit(wordVecs, lexicon, numIter), "outFile.txt") 
+        new_embeddings = retrofit.retrofit(wordVecs, lexicon, numIter)
+
+        vocab = d.get_vocabulary()
+        for word in new_embeddings:
+            word_id = vocab[word]
+            embedding_matrix[word_id] = new_embeddings[word]
 
         # pickle.dump(embedding_map, open("utils/embedding_map", "wb"))
 
