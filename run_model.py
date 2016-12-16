@@ -49,12 +49,17 @@ NUM_LABELS = 6  # one-hot vector size
 EMBEDDING_DIM = 100
 NUM_EPOCHS = 1
 LSTM_DEPTH = 1
-
+RETROFITTING_DB = "retrofitting/lexicons/ppdb-xl.txt"
+RETROFITTING_ITER = 10
 
 def main():
+    outn = "accuracy_results.txt"
+    fout = open(outn, "a+")
+    fout.write("\n\nEpochs: " + str(NUM_EPOCHS) + "\nDepth: " + str(LSTM_DEPTH) + "\nDimensions: " + str(EMBEDDING_DIM) + "\nRetrofitting DB: " + RETROFITTING_DB + "\nRetrofitting Iterations:" + str(RETROFITTING_ITER))
     # pass cleaned dataset file containing sentences with non-overlapping
     # argument spans
     d = preprocess.Dataset("cleaned_input_data.tsv")
+
 
     # create output directory if needed
     for fold in ['1', '2', '3', '4', '5']:
@@ -137,11 +142,12 @@ def main():
                     embed_str = ""
                     for embed in embedding_vector:
                         embed_str = embed_str + "," + str(embed)
-                    wordVec[word] = retrofit.normalize_weight_vector(embedding_vector)
+                    #wordVec[word] = retrofit.normalize_weight_vector(embedding_vector)
+                    wordVec[word] = embedding_vector
 
         #Retrofit embeddings
-        lexicon = retrofit.read_lexicon("retrofitting/lexicons/ppdb-xl.txt", wordVec)
-        numIter = int(10)
+        lexicon = retrofit.read_lexicon(RETROFITTING_DB, wordVec)
+        numIter = int(RETROFITTING_ITER)
         new_embeddings = retrofit.retrofit(wordVec, lexicon, numIter)
 
         vocab = d.get_vocabulary()
@@ -186,6 +192,13 @@ def main():
         print "\nRunning Test:"
         res = model.predict_classes(X_test)
         res_probs = model.predict_proba(X_test, verbose=0)
+
+        #CSE 537 Project Code
+        scores = model.evaluate(X_test, Y_test, verbose = 0)
+        accur = "%s: %.2f%%" % (model.metrics_names[1], scores[1]*100)
+        fout.write("\nfold " + str(f_num+1) + ": " + accur)
+
+
         # LSTM Model End  ------------------------------------------------------
 
         # B-LSTM Model Start  --------------------------------------------------
@@ -383,6 +396,8 @@ def main():
         with open(out_name + 'test.srlout.json', 'w') as fp:
             json.dump(dict(j_dump_data), fp, indent=4)
 
+    #CSE 537 Project Code
+    fout.close()
     print "\n\nDone!"
 
 
