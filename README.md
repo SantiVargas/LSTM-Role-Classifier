@@ -1,5 +1,5 @@
 # LSTM-Role-Classifier
-Role Classification using Deep LSTM and Bi-LSTM Networks
+Role Classification using Deep LSTM and Bi-LSTM Networks and Word Vector Retrofitting
 
 ##### How to run?
 ```$ python run_model.py``` to run LSTM Model.  
