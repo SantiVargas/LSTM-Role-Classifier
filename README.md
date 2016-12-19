@@ -4,9 +4,8 @@ Role Classification using Deep LSTM and Bi-LSTM Networks
 ##### How to run?
 ```$ python run_model.py``` to run LSTM Model.  
 _Change parameters of the model within the file_
-#### Implementation description
 
-##### Description
+#### Implementation Description
 We can describe our ’LSTM Retrofitted Classifier’ algorithm
 as below:
 1. Categorize processes into five folds.
