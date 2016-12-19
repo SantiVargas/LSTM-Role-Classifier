@@ -6,6 +6,7 @@ Role Classification using Deep LSTM and Bi-LSTM Networks
 _Change parameters of the model within the file_
 #### Implementation description
 
+##### Description
 We can describe our ’LSTM Retrofitted Classifier’ algorithm
 as below:
 1. Categorize processes into five folds.
@@ -32,3 +33,10 @@ typical LSTM functionality.
 
 9. Run LSTM Retrofitted Model on test data in five folds
 created at the beginning of the algorithm.
+
+##### Project Description
+* Class: CSE 537 - Aritificial Intelligence
+* Professor: Niranjan Balasubramanian
+* Team Members: Shilpi Bhattacharyya, Santiago Vargas, and Russell Walker
+* Semester: Fall 2016
+* Assignment: Final Project
