@@ -176,7 +176,7 @@ def main():
         rms = RMSprop()
         model.compile(loss='categorical_crossentropy',
                       optimizer=rms,
-                      metrics=["accuracy"])
+                      metrics=["accuracy","binary_accuracy","precision","recall","fmeasure"])
 
         history = History()
         print "\nRunning Train:"
@@ -195,7 +195,8 @@ def main():
 
         #CSE 537 Project Code
         scores = model.evaluate(X_test, Y_test, verbose = 0)
-        accur = "%s: %.2f%%" % (model.metrics_names[1], scores[1]*100)
+        for index, metric in enumerate(model.metrics_names):
+			print str(index) + " " + model.metrics_names[index] + ": " + str(scores[index])
         fout.write("\nfold " + str(f_num+1) + ": " + accur)
 
 
@@ -339,7 +340,7 @@ def main():
         res_df = res_df[["PROCESS", "SENT_ID", "SENTENCE", "ARG_ID", "START_IDX", "END_IDX", "TEXT", "ARG", "GOLD", "PREDICTED", "CORRECT", "A0", "A1", "A2", "A3", "NONE"]]
 
         # Dump RNN result if needed for analysis
-        # res_df.to_csv("RNN_RESULT.tsv", sep="\t", index=False)
+        res_df.to_csv("RNN_RESULT.tsv", sep="\t", index=False)
 
         # dump JSON file in appropriate format in order to run ILP
         j_dump_data = []
@@ -355,8 +356,7 @@ def main():
                 # filter and only consider argument spans
                 gif_sentence = gi_sentence[gi_sentence.ARG_ID > -1]
                 if len(g_sentence.groups.keys()) > 0:
-                    sentence_text = g_sentence.groups.keys()[0]
-
+                    sentence_text = g_sentence.groups.keys()[0].item()
                     arg_ids = list(set(gif_sentence.ARG_ID.tolist()))
                     arg_list = []
                     for arg_id in arg_ids:
@@ -392,9 +392,9 @@ def main():
 
         out_name = 'out_data/fold-' + str(f_num+1) + '/test/'
         with open(out_name + 'test.srlpredict.json', 'w') as fp:
-            json.dump(dict(j_dump_data), fp, indent=4)
+            json.dump(j_dump_data, fp, indent=4, default=str)
         with open(out_name + 'test.srlout.json', 'w') as fp:
-            json.dump(dict(j_dump_data), fp, indent=4)
+            json.dump(j_dump_data, fp, indent=4, default=str)
 
     #CSE 537 Project Code
     fout.close()
